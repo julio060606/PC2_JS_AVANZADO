@@ -1,0 +1,58 @@
+<div class="container mt-5">
+  
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-uppercase fw-bold">Gestión de Productos</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProducto">
+      + Nuevo Producto
+    </button> 
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered align-middle">
+      <thead class="table-dark text-center">
+        <tr>
+          <th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prod of listaProductos" class="text-center">
+          <td class="fw-bold">{{ prod.id }}</td>
+          <td>{{ prod.nombre }}</td>
+          <td>S/. {{ prod.precio }}</td>
+          <td>{{ prod.stock }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" id="modalProducto" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Registrar Nuevo Producto</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>Nombre del Producto</label>
+          <input type="text" class="form-control" [(ngModel)]="nuevoProducto.nombre">
+        </div>
+        <div class="mb-3">
+          <label>Precio (S/.)</label>
+          <input type="number" class="form-control" [(ngModel)]="nuevoProducto.precio">
+        </div>
+        <div class="mb-3">
+          <label>Stock</label>
+          <input type="number" class="form-control" [(ngModel)]="nuevoProducto.stock">
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" (click)="guardarProducto()" data-bs-dismiss="modal">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
