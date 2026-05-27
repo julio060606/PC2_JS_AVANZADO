@@ -1,53 +1,36 @@
 <header class="module-header">
-  <h1>Cursos</h1>
-  <p>Revisa cupos disponibles y registra matriculados.</p>
+  <h1>Cursos disponibles</h1>
+  <p>Consulta la oferta academica y las vacantes vigentes.</p>
 </header>
 
-<p class="alert alert-success py-2" *ngIf="mensaje()">{{ mensaje() }}</p>
-<p class="alert alert-danger py-2" *ngIf="error()">{{ error() }}</p>
-
-<form *ngIf="cursoSeleccionado() as cursoActivo" class="module-panel enrollment-panel mb-4" #formMatricula="ngForm" (ngSubmit)="registrarMatricula()">
-  <h2 class="section-title">Matricular en {{ cursoActivo.nombre }}</h2>
-  <div class="row g-2">
-    <div class="col-md-5">
-      <label class="form-label" for="matriculadoNombre">Nombre</label>
-      <input id="matriculadoNombre" class="form-control" name="nombre" [(ngModel)]="matricula.nombre" required maxlength="120">
-    </div>
-    <div class="col-md-5">
-      <label class="form-label" for="matriculadoEmail">Email</label>
-      <input id="matriculadoEmail" class="form-control" name="email" type="email" [(ngModel)]="matricula.email" required maxlength="180">
-    </div>
-    <div class="col-md-2 d-flex align-items-end">
-      <button class="btn btn-primary w-100" type="submit" [disabled]="formMatricula.invalid">Matricular</button>
-    </div>
+@if (error()) {
+  <p class="alert alert-danger py-2">{{ error() }}</p>
+}
+@if (cargando()) {
+  <p class="empty-state">Cargando cursos...</p>
+} @else {
+  <div class="course-grid">
+    @for (curso of cursos(); track curso.id) {
+      <article class="card course-card" [class.no-vacancies]="curso.vacantes === 0">
+        <div class="card-body">
+          <p class="code">{{ curso.codigo }}</p>
+          <h2 class="h5">{{ curso.nombre | uppercase }}</h2>
+          <p class="details">{{ curso.creditos }} creditos | {{ curso.modalidad | titlecase }}</p>
+          @if (curso.vacantes === 0) {
+            <span class="badge text-bg-danger">Sin vacantes</span>
+          } @else {
+            <span class="availability">{{ curso.vacantes }} vacantes</span>
+          }
+          <div class="mt-3">
+            <a class="btn btn-sm btn-success" [routerLink]="curso.vacantes > 0 ? ['/matricula'] : null" [queryParams]="{ cursoId: curso.id }"
+              [class.disabled]="curso.vacantes === 0" [attr.aria-disabled]="curso.vacantes === 0">
+              Solicitar matricula
+            </a>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <p class="empty-state grid-message">No hay cursos registrados.</p>
+    }
   </div>
-  <button class="btn btn-link mt-2" type="button" (click)="cancelar()">Cancelar</button>
-</form>
-
-<p class="loading-state" *ngIf="cargando()">Cargando cursos...</p>
-
-<div class="course-grid">
-<div class="card course-card" *ngFor="let curso of cursos()">
-  <div class="card-body">
-    <div class="d-flex justify-content-between">
-      <div>
-        <h2 class="h5">{{ curso.nombre }}</h2>
-        <p>{{ curso.descripcion }}</p>
-        <p class="availability mb-2">Cupos disponibles: <strong>{{ curso.cuposDisponibles }}</strong> / {{ curso.cupos }}</p>
-      </div>
-      <div>
-        <button class="btn btn-sm btn-primary" type="button" (click)="seleccionar(curso)" [disabled]="curso.cuposDisponibles === 0">
-          Matricular
-        </button>
-      </div>
-    </div>
-    <strong>Matriculados</strong>
-    <ul class="students mb-0">
-      <li *ngFor="let estudiante of curso.matriculados">{{ estudiante.nombre }} - {{ estudiante.email }}</li>
-      <li *ngIf="curso.matriculados.length === 0">Sin matriculados.</li>
-    </ul>
-  </div>
-</div>
-</div>
-
-<p class="empty-state" *ngIf="!cargando() && cursos().length === 0">No hay cursos registrados.</p>
+}

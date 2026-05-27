@@ -1,7 +1,11 @@
 package com.PC2.backend.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,9 +28,20 @@ public class Tarea {
 	@Column(nullable = false, length = 150)
 	private String titulo;
 
-	@Column(nullable = false, length = 500)
+	@Column(nullable = false, length = 120)
+	private String curso;
+
+	@Column(length = 500)
 	private String descripcion;
 
+	@Column(name = "fecha_entrega", nullable = false)
+	private LocalDate fechaEntrega;
+
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private Boolean completada = false;
+	private EstadoTarea estado = EstadoTarea.PENDIENTE;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private PrioridadTarea prioridad;
 }

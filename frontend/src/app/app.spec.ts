@@ -19,9 +19,9 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('Productos');
-    expect(compiled.textContent).toContain('Incidencias');
-    expect(compiled.textContent).toContain('Cursos');
+    expect(compiled.textContent).toContain('Cafeteria');
+    expect(compiled.textContent).toContain('Laboratorio');
+    expect(compiled.textContent).toContain('Matricula');
     expect(compiled.textContent).toContain('Tareas');
   });
 });

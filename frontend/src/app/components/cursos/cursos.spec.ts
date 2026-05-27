@@ -1,13 +1,14 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { Cursos } from './cursos';
 
 describe('Cursos', () => {
   it('should create', async () => {
     await TestBed.configureTestingModule({
       imports: [Cursos],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
     expect(TestBed.createComponent(Cursos).componentInstance).toBeTruthy();
   });
@@ -15,7 +16,7 @@ describe('Cursos', () => {
   it('shows cursos after the initial request without another interaction', async () => {
     await TestBed.configureTestingModule({
       imports: [Cursos],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     }).compileComponents();
 
     const fixture = TestBed.createComponent(Cursos);
@@ -25,17 +26,17 @@ describe('Cursos', () => {
     http.expectOne('http://localhost:8080/api/cursos').flush([
       {
         id: 3,
+        codigo: 'ANG201',
         nombre: 'Angular inicial',
-        descripcion: 'Curso de prueba',
-        cupos: 10,
-        cuposDisponibles: 9,
-        matriculados: [],
+        creditos: 4,
+        modalidad: 'HIBRIDA',
+        vacantes: 9,
       },
     ]);
     await fixture.whenStable();
 
-    expect(fixture.nativeElement.textContent).toContain('Angular inicial');
-    expect(fixture.nativeElement.textContent).toContain('Cupos disponibles');
+    expect(fixture.nativeElement.textContent).toContain('ANGULAR INICIAL');
+    expect(fixture.nativeElement.textContent).toContain('9 vacantes');
     http.verify();
   });
 });

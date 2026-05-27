@@ -26,6 +26,9 @@ public class Producto {
 	@Column(nullable = false, length = 120)
 	private String nombre;
 
+	@Column(nullable = false, length = 80)
+	private String categoria;
+
 	@Column(nullable = false, precision = 10, scale = 2)
 	private BigDecimal precio;
 

@@ -1,0 +1,50 @@
+<header class="module-header">
+  <h1>{{ edicionId() === undefined ? 'Nueva tarea' : 'Editar tarea' }}</h1>
+  <p>Registra actividades pendientes y define su prioridad.</p>
+</header>
+
+@if (mensaje()) {
+  <p class="alert alert-success py-2">{{ mensaje() }}</p>
+}
+@if (error()) {
+  <p class="alert alert-danger py-2">{{ error() }}</p>
+}
+
+<form class="module-panel row g-3" #formTarea="ngForm" (ngSubmit)="guardar()">
+  <div class="col-md-6">
+    <label class="form-label" for="titulo">Titulo</label>
+    <input id="titulo" class="form-control" name="titulo" [(ngModel)]="formulario.titulo" required maxlength="150">
+  </div>
+  <div class="col-md-6">
+    <label class="form-label" for="curso">Curso</label>
+    <input id="curso" class="form-control" name="curso" [(ngModel)]="formulario.curso" required maxlength="120">
+  </div>
+  <div class="col-12">
+    <label class="form-label" for="descripcion">Descripcion</label>
+    <textarea id="descripcion" class="form-control" name="descripcion" [(ngModel)]="formulario.descripcion" maxlength="500"></textarea>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label" for="fecha">Fecha de entrega</label>
+    <input id="fecha" class="form-control" type="date" name="fecha" [(ngModel)]="formulario.fechaEntrega" required>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label" for="estado">Estado</label>
+    <select id="estado" class="form-select" name="estado" [(ngModel)]="formulario.estado" required>
+      @for (estado of estados; track estado) {
+        <option [value]="estado">{{ etiqueta(estado) }}</option>
+      }
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label" for="prioridad">Prioridad</label>
+    <select id="prioridad" class="form-select" name="prioridad" [(ngModel)]="formulario.prioridad" required>
+      @for (prioridad of prioridades; track prioridad) {
+        <option [value]="prioridad">{{ etiqueta(prioridad) }}</option>
+      }
+    </select>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary me-2" type="submit" [disabled]="formTarea.invalid">Guardar</button>
+    <a class="btn btn-outline-secondary" routerLink="/tareas">Volver</a>
+  </div>
+</form>

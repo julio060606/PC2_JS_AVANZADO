@@ -1,0 +1,42 @@
+.module-header {
+  border-left: 5px solid #d99632;
+  margin-bottom: 1.3rem;
+  padding-left: 1rem;
+}
+
+.module-header p {
+  color: var(--muted-text);
+  margin: 0;
+}
+
+.stats-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.stat-card {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-top: 4px solid #d99632;
+  border-radius: 0.7rem;
+  padding: 1.1rem;
+}
+
+.stat-card strong {
+  color: #17324d;
+  display: block;
+  font-size: 2rem;
+}
+
+.stat-card span {
+  color: var(--muted-text);
+}
+
+.process {
+  border-top-color: #3278b7;
+}
+
+.done {
+  border-top-color: #27885d;
+}

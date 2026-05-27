@@ -1,5 +1,7 @@
 package com.PC2.backend.entity;
 
+import java.time.Instant;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,8 +25,21 @@ public class Incidencia {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, length = 150)
-	private String titulo;
+	@Column(name = "nombre_reportante", nullable = false, length = 120)
+	private String nombreReportante;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "rol_reportante", nullable = false, length = 20)
+	private RolReportante rolReportante;
+
+	@Column(nullable = false, length = 40)
+	private String aula;
+
+	@Column(nullable = false, length = 60)
+	private String equipo;
+
+	@Column(nullable = false, length = 80)
+	private String tipo;
 
 	@Column(nullable = false, length = 500)
 	private String descripcion;
@@ -32,4 +47,7 @@ public class Incidencia {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 30)
 	private EstadoIncidencia estado = EstadoIncidencia.PENDIENTE;
+
+	@Column(name = "fecha_registro", nullable = false, updatable = false)
+	private Instant fechaRegistro = Instant.now();
 }

@@ -1,0 +1,41 @@
+<header class="module-header">
+  <h1>Nuevo pedido</h1>
+  <p>Solicita productos disponibles para un estudiante.</p>
+</header>
+
+@if (mensaje()) {
+  <p class="alert alert-success py-2">{{ mensaje() }}</p>
+}
+@if (error()) {
+  <p class="alert alert-danger py-2">{{ error() }}</p>
+}
+
+<form class="module-panel row g-3" #formPedido="ngForm" (ngSubmit)="registrar()">
+  <div class="col-md-6">
+    <label class="form-label" for="nombreEstudiante">Nombre del estudiante</label>
+    <input id="nombreEstudiante" class="form-control" name="nombreEstudiante" [(ngModel)]="pedido.nombreEstudiante" required maxlength="120">
+  </div>
+  <div class="col-md-6">
+    <label class="form-label" for="producto">Producto</label>
+    <select id="producto" class="form-select" name="productoId" [(ngModel)]="pedido.productoId" required>
+      <option [ngValue]="null">Seleccione un producto</option>
+      @for (producto of productos(); track producto.id) {
+        <option [ngValue]="producto.id" [disabled]="producto.stock === 0">
+          {{ producto.nombre }} - {{ producto.precio | currency:'PEN':'symbol':'1.2-2' }} ({{ producto.stock }} disponibles)
+        </option>
+      }
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label" for="cantidad">Cantidad</label>
+    <input id="cantidad" class="form-control" type="number" name="cantidad" [(ngModel)]="pedido.cantidad" min="1" required>
+  </div>
+  <div class="col-md-9">
+    <label class="form-label" for="observacion">Observacion</label>
+    <input id="observacion" class="form-control" name="observacion" [(ngModel)]="pedido.observacion" maxlength="300">
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary me-2" type="submit" [disabled]="formPedido.invalid || enviando()">Enviar pedido</button>
+    <a class="btn btn-outline-secondary" routerLink="/productos">Volver a productos</a>
+  </div>
+</form>

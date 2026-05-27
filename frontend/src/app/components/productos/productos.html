@@ -1,48 +1,33 @@
 <header class="module-header">
-  <h1>Productos</h1>
-  <p>Registra productos y controla su disponibilidad.</p>
+  <h1>Productos de cafeteria</h1>
+  <p>Consulta los productos disponibles antes de registrar un pedido.</p>
 </header>
 
-<p class="alert alert-success py-2" *ngIf="mensaje()">{{ mensaje() }}</p>
-<p class="alert alert-danger py-2" *ngIf="error()">{{ error() }}</p>
+@if (error()) {
+  <p class="alert alert-danger py-2">{{ error() }}</p>
+}
 
-<form class="module-panel row g-3 mb-4" #formProducto="ngForm" (ngSubmit)="guardarProducto()">
-  <div class="col-md-4">
-    <label class="form-label" for="productoNombre">Nombre</label>
-    <input id="productoNombre" class="form-control" name="nombre" [(ngModel)]="nuevoProducto.nombre" required maxlength="120">
+@if (cargando()) {
+  <p class="empty-state">Cargando productos...</p>
+} @else {
+  <div class="products-grid">
+    @for (producto of listaProductos(); track producto.id) {
+      <article class="card product-card" [class.unavailable]="producto.stock === 0">
+        <div class="card-body">
+          <span class="category">{{ producto.categoria }}</span>
+          <h2 class="h5 mt-3">{{ producto.nombre }}</h2>
+          <p class="price">{{ producto.precio | currency:'PEN':'symbol':'1.2-2' }}</p>
+          @if (producto.stock === 0) {
+            <span class="badge text-bg-danger">Sin stock</span>
+          } @else {
+            <span class="stock-pill">Stock: {{ producto.stock }}</span>
+          }
+        </div>
+      </article>
+    } @empty {
+      <p class="empty-state grid-message">No hay productos registrados.</p>
+    }
   </div>
-  <div class="col-md-3">
-    <label class="form-label" for="productoPrecio">Precio</label>
-    <input id="productoPrecio" class="form-control" type="number" name="precio" [(ngModel)]="nuevoProducto.precio" required min="0" step="0.01">
-  </div>
-  <div class="col-md-3">
-    <label class="form-label" for="productoStock">Stock</label>
-    <input id="productoStock" class="form-control" type="number" name="stock" [(ngModel)]="nuevoProducto.stock" required min="0">
-  </div>
-  <div class="col-md-2 d-flex align-items-end">
-    <button class="btn btn-primary w-100" type="submit" [disabled]="formProducto.invalid">Registrar</button>
-  </div>
-</form>
+}
 
-<section class="module-panel table-responsive">
-  <h2 class="section-title">Inventario registrado</h2>
-  <table class="table table-hover align-middle mb-0">
-    <thead>
-      <tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Stock</th></tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let producto of listaProductos()">
-        <td>{{ producto.id }}</td>
-        <td>{{ producto.nombre }}</td>
-        <td>S/ {{ producto.precio | number:'1.2-2' }}</td>
-        <td><span class="stock-pill">{{ producto.stock }}</span></td>
-      </tr>
-      <tr *ngIf="cargando()">
-        <td colspan="4" class="empty-state">Cargando productos...</td>
-      </tr>
-      <tr *ngIf="!cargando() && listaProductos().length === 0">
-        <td colspan="4" class="empty-state">No hay productos registrados.</td>
-      </tr>
-    </tbody>
-  </table>
-</section>
+<a class="btn btn-primary mt-4" routerLink="/pedidos">Registrar pedido</a>

@@ -17,7 +17,11 @@ export class IncidenciaService {
     return this.http.get<Incidencia[]>(this.url);
   }
 
-  actualizarIncidencia(id: number, incidencia: IncidenciaRequest): Observable<Incidencia> {
-    return this.http.put<Incidencia>(`${this.url}/${id}`, incidencia);
+  registrarIncidencia(incidencia: IncidenciaRequest): Observable<Incidencia> {
+    return this.http.post<Incidencia>(this.url, incidencia);
+  }
+
+  cambiarEstado(id: number, estado: Incidencia['estado']): Observable<Incidencia> {
+    return this.http.put<Incidencia>(`${this.url}/${id}/estado`, { estado });
   }
 }

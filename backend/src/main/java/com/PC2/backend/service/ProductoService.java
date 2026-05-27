@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.PC2.backend.dto.ProductoRequest;
 import com.PC2.backend.dto.ProductoResponse;
 import com.PC2.backend.entity.Producto;
+import com.PC2.backend.exception.ResourceNotFoundException;
 import com.PC2.backend.repository.ProductoRepository;
 
 @Service
@@ -24,16 +24,14 @@ public class ProductoService {
 		return productoRepository.findAll().stream().map(this::toResponse).toList();
 	}
 
-	@Transactional
-	public ProductoResponse crear(ProductoRequest request) {
-		Producto producto = new Producto();
-		producto.setNombre(request.nombre().trim());
-		producto.setPrecio(request.precio());
-		producto.setStock(request.stock());
-		return toResponse(productoRepository.save(producto));
+	public ProductoResponse obtenerPorId(Long id) {
+		return productoRepository.findById(id)
+				.map(this::toResponse)
+				.orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado: " + id));
 	}
 
-	private ProductoResponse toResponse(Producto producto) {
-		return new ProductoResponse(producto.getId(), producto.getNombre(), producto.getPrecio(), producto.getStock());
+	public ProductoResponse toResponse(Producto producto) {
+		return new ProductoResponse(producto.getId(), producto.getNombre(), producto.getCategoria(),
+				producto.getPrecio(), producto.getStock());
 	}
 }

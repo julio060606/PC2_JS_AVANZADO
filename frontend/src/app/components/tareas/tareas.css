@@ -4,10 +4,6 @@
   padding-left: 1rem;
 }
 
-.module-header h1 {
-  margin-bottom: 0.25rem;
-}
-
 .module-header p {
   color: var(--muted-text);
   margin: 0;
@@ -20,37 +16,40 @@
   padding: 1.15rem;
 }
 
-.editor-panel {
-  border-top: 4px solid #7d5db5;
-}
-
-.section-title {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-}
-
 thead th {
   background: #f4effc;
   color: #58417d;
 }
 
-.completed-row {
-  color: #637585;
-}
-
-.status-pill {
-  background: #fff1db;
+.status-pill,
+.priority {
   border-radius: 1rem;
-  color: #925a0b;
   display: inline-block;
   font-size: 0.8rem;
   font-weight: 600;
   padding: 0.25rem 0.7rem;
 }
 
-.status-pill.done {
+.pendiente,
+.media {
+  background: #fff1db;
+  color: #925a0b;
+}
+
+.en_proceso {
+  background: #e8f2ff;
+  color: #1c5b8c;
+}
+
+.completada,
+.baja {
   background: #e2f5e9;
   color: #176540;
+}
+
+.alta {
+  background: #fbe4e4;
+  color: #992d2d;
 }
 
 .empty-state {

@@ -1,0 +1,18 @@
+.module-header {
+  border-left: 5px solid #7d5db5;
+  margin-bottom: 1.3rem;
+  padding-left: 1rem;
+}
+
+.module-header p {
+  color: var(--muted-text);
+  margin: 0;
+}
+
+.module-panel {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-top: 4px solid #7d5db5;
+  border-radius: 0.7rem;
+  padding: 1.15rem;
+}

@@ -49,11 +49,16 @@ public class TareaService {
 
 	private void actualizarCampos(Tarea tarea, TareaRequest request) {
 		tarea.setTitulo(request.titulo().trim());
-		tarea.setDescripcion(request.descripcion().trim());
-		tarea.setCompletada(request.completada());
+		tarea.setCurso(request.curso().trim());
+		tarea.setDescripcion(request.descripcion() == null || request.descripcion().isBlank() ? null
+				: request.descripcion().trim());
+		tarea.setFechaEntrega(request.fechaEntrega());
+		tarea.setEstado(request.estado());
+		tarea.setPrioridad(request.prioridad());
 	}
 
 	private TareaResponse toResponse(Tarea tarea) {
-		return new TareaResponse(tarea.getId(), tarea.getTitulo(), tarea.getDescripcion(), tarea.getCompletada());
+		return new TareaResponse(tarea.getId(), tarea.getTitulo(), tarea.getCurso(), tarea.getDescripcion(),
+				tarea.getFechaEntrega(), tarea.getEstado(), tarea.getPrioridad());
 	}
 }

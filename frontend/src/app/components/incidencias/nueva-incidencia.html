@@ -1,0 +1,45 @@
+<header class="module-header">
+  <h1>Nueva incidencia</h1>
+  <p>Registra un problema encontrado en un equipo del laboratorio.</p>
+</header>
+
+@if (mensaje()) {
+  <p class="alert alert-success py-2">{{ mensaje() }}</p>
+}
+@if (error()) {
+  <p class="alert alert-danger py-2">{{ error() }}</p>
+}
+
+<form class="module-panel row g-3" #formIncidencia="ngForm" (ngSubmit)="registrar()">
+  <div class="col-md-6">
+    <label class="form-label" for="reportante">Reportante</label>
+    <input id="reportante" class="form-control" name="reportante" [(ngModel)]="formulario.nombreReportante" required maxlength="120">
+  </div>
+  <div class="col-md-3">
+    <label class="form-label" for="rol">Rol</label>
+    <select id="rol" class="form-select" name="rol" [(ngModel)]="formulario.rolReportante" required>
+      <option value="ESTUDIANTE">Estudiante</option>
+      <option value="DOCENTE">Docente</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label" for="aula">Aula</label>
+    <input id="aula" class="form-control" name="aula" [(ngModel)]="formulario.aula" required maxlength="40">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label" for="equipo">Equipo</label>
+    <input id="equipo" class="form-control" name="equipo" [(ngModel)]="formulario.equipo" required maxlength="60">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label" for="tipo">Tipo</label>
+    <input id="tipo" class="form-control" name="tipo" [(ngModel)]="formulario.tipo" required maxlength="80">
+  </div>
+  <div class="col-12">
+    <label class="form-label" for="descripcion">Descripcion</label>
+    <textarea id="descripcion" class="form-control" name="descripcion" [(ngModel)]="formulario.descripcion" required maxlength="500"></textarea>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary me-2" type="submit" [disabled]="formIncidencia.invalid">Registrar</button>
+    <a class="btn btn-outline-secondary" routerLink="/incidencias/lista">Ver lista</a>
+  </div>
+</form>

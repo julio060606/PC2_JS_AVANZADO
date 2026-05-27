@@ -4,31 +4,40 @@
   padding-left: 1rem;
 }
 
-.module-header h1 {
-  margin-bottom: 0.25rem;
-}
-
 .module-header p {
   color: var(--muted-text);
   margin: 0;
 }
 
-.module-panel {
-  background: #fff;
+.products-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.product-card {
   border: 1px solid var(--card-border);
-  border-radius: 0.7rem;
-  padding: 1.15rem;
+  box-shadow: none;
 }
 
-.section-title {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
+.product-card.unavailable {
+  background: #fbfcfd;
+  opacity: 0.78;
 }
 
-thead th {
+.category {
   background: #eef5fb;
+  border-radius: 1rem;
   color: #31516a;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.7rem;
+}
+
+.price {
+  color: #17324d;
+  font-size: 1.35rem;
+  font-weight: 700;
 }
 
 .stock-pill {
@@ -37,13 +46,18 @@ thead th {
   color: #1d5686;
   display: inline-block;
   font-weight: 600;
-  min-width: 2.2rem;
-  padding: 0.15rem 0.65rem;
-  text-align: center;
+  padding: 0.2rem 0.65rem;
 }
 
 .empty-state {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 0.6rem;
   color: var(--muted-text);
-  padding: 1.25rem;
+  padding: 1.15rem;
   text-align: center;
+}
+
+.grid-message {
+  grid-column: 1 / -1;
 }

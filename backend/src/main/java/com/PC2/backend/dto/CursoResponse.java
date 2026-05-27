@@ -1,12 +1,7 @@
 package com.PC2.backend.dto;
 
-import java.util.List;
+import com.PC2.backend.entity.ModalidadCurso;
 
-public record CursoResponse(
-		Long id,
-		String nombre,
-		String descripcion,
-		Integer cupos,
-		Integer cuposDisponibles,
-		List<MatriculadoResponse> matriculados) {
+public record CursoResponse(Long id, String codigo, String nombre, Integer creditos, ModalidadCurso modalidad,
+		Integer vacantes) {
 }

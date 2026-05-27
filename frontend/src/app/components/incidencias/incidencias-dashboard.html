@@ -1,0 +1,18 @@
+<header class="module-header">
+  <h1>Dashboard de laboratorio</h1>
+  <p>Estado actual de las incidencias reportadas.</p>
+</header>
+
+@if (error()) {
+  <p class="alert alert-danger py-2">{{ error() }}</p>
+}
+
+<div class="stats-grid mb-4">
+  <article class="stat-card total"><strong>{{ total() }}</strong><span>Total</span></article>
+  <article class="stat-card pending"><strong>{{ pendientes() }}</strong><span>Pendientes</span></article>
+  <article class="stat-card process"><strong>{{ enProceso() }}</strong><span>En proceso</span></article>
+  <article class="stat-card done"><strong>{{ atendidas() }}</strong><span>Atendidas</span></article>
+</div>
+
+<a class="btn btn-primary me-2" routerLink="/incidencias/nueva">Nueva incidencia</a>
+<a class="btn btn-outline-primary" routerLink="/incidencias/lista">Ver lista</a>

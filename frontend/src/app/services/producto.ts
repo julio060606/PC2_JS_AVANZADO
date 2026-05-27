@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Producto } from '../models/producto';
+import { Pedido, PedidoRequest, Producto } from '../models/producto';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,11 @@ export class ProductoService {
     return this.http.get<Producto[]>(this.url);
   }
 
-  insertarProducto(producto: Producto): Observable<Producto> {
-    return this.http.post<Producto>(this.url, producto);
+  getProducto(id: number): Observable<Producto> {
+    return this.http.get<Producto>(`${this.url}/${id}`);
+  }
+
+  registrarPedido(pedido: PedidoRequest): Observable<Pedido> {
+    return this.http.post<Pedido>(`${environment.apiUrl}/pedidos`, pedido);
   }
 }

@@ -1,52 +1,51 @@
 <header class="module-header">
-  <h1>Tareas</h1>
-  <p>Registra actividades y marca su avance.</p>
+  <h1>Tareas academicas</h1>
+  <p>Controla fechas de entrega, estado y prioridad.</p>
 </header>
 
-<p class="alert alert-success py-2" *ngIf="mensaje()">{{ mensaje() }}</p>
-<p class="alert alert-danger py-2" *ngIf="error()">{{ error() }}</p>
+@if (mensaje()) {
+  <p class="alert alert-success py-2">{{ mensaje() }}</p>
+}
+@if (error()) {
+  <p class="alert alert-danger py-2">{{ error() }}</p>
+}
 
-<form class="module-panel editor-panel mb-4" #formTarea="ngForm" (ngSubmit)="guardar()">
-  <h2 class="section-title">{{ edicionId() === undefined ? 'Registrar tarea' : 'Editar tarea #' + edicionId() }}</h2>
-  <div class="mb-2">
-    <label class="form-label" for="tareaTitulo">Titulo</label>
-    <input id="tareaTitulo" class="form-control" name="titulo" [(ngModel)]="formulario.titulo" required maxlength="150">
-  </div>
-  <div class="mb-2">
-    <label class="form-label" for="tareaDescripcion">Descripcion</label>
-    <textarea id="tareaDescripcion" class="form-control" name="descripcion" [(ngModel)]="formulario.descripcion" required maxlength="500"></textarea>
-  </div>
-  <div class="form-check mb-3">
-    <input id="tareaCompletada" class="form-check-input" type="checkbox" name="completada" [(ngModel)]="formulario.completada">
-    <label class="form-check-label" for="tareaCompletada">Completada</label>
-  </div>
-  <button class="btn btn-primary me-2" type="submit" [disabled]="formTarea.invalid">Guardar</button>
-  <button *ngIf="edicionId() !== undefined" class="btn btn-secondary" type="button" (click)="cancelarEdicion()">Cancelar</button>
-</form>
+<a class="btn btn-primary mb-4" routerLink="/tareas/nueva">Nueva tarea</a>
 
 <section class="module-panel table-responsive">
-  <h2 class="section-title">Actividades registradas</h2>
   <table class="table table-hover align-middle mb-0">
     <thead>
-      <tr><th>ID</th><th>Titulo</th><th>Descripcion</th><th>Estado</th><th></th></tr>
+      <tr><th>Titulo</th><th>Curso</th><th>Entrega</th><th>Estado</th><th>Prioridad</th><th>Alertas</th><th></th></tr>
     </thead>
     <tbody>
-      <tr *ngFor="let tarea of tareas()" [class.completed-row]="tarea.completada">
-        <td>{{ tarea.id }}</td>
-        <td>{{ tarea.titulo }}</td>
-        <td>{{ tarea.descripcion }}</td>
-        <td><span class="status-pill" [class.done]="tarea.completada">{{ tarea.completada ? 'Completada' : 'Pendiente' }}</span></td>
-        <td>
-          <button class="btn btn-sm btn-outline-primary me-2" type="button" (click)="editar(tarea)">Editar</button>
-          <button class="btn btn-sm btn-outline-danger" type="button" (click)="eliminar(tarea)">Eliminar</button>
-        </td>
-      </tr>
-      <tr *ngIf="cargando()">
-        <td colspan="5" class="empty-state">Cargando tareas...</td>
-      </tr>
-      <tr *ngIf="!cargando() && tareas().length === 0">
-        <td colspan="5" class="empty-state">No hay tareas registradas.</td>
-      </tr>
+      @for (tarea of tareas(); track tarea.id) {
+        <tr>
+          <td>{{ tarea.titulo }}</td>
+          <td>{{ tarea.curso }}</td>
+          <td>{{ tarea.fechaEntrega | date:'dd/MM/yyyy' }}</td>
+          <td><span class="status-pill" [ngClass]="tarea.estado.toLowerCase()">{{ etiqueta(tarea.estado) }}</span></td>
+          <td><span class="priority" [ngClass]="tarea.prioridad.toLowerCase()">{{ etiqueta(tarea.prioridad) }}</span></td>
+          <td>
+            @if (vencida(tarea)) {
+              <span class="badge text-bg-danger me-1">Vencida</span>
+            }
+            @if (urgente(tarea)) {
+              <span class="badge text-bg-warning">Urgente</span>
+            }
+          </td>
+          <td class="text-nowrap">
+            <a class="btn btn-sm btn-outline-primary me-2" [routerLink]="['/tareas/nueva']" [queryParams]="{ id: tarea.id }">Editar</a>
+            <button class="btn btn-sm btn-outline-danger" type="button" (click)="eliminar(tarea)">Eliminar</button>
+          </td>
+        </tr>
+      } @empty {
+        @if (!cargando()) {
+          <tr><td colspan="7" class="empty-state">No hay tareas registradas.</td></tr>
+        }
+      }
+      @if (cargando()) {
+        <tr><td colspan="7" class="empty-state">Cargando tareas...</td></tr>
+      }
     </tbody>
   </table>
 </section>

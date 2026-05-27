@@ -1,0 +1,67 @@
+<header class="module-header">
+  <h1>Solicitud de matricula</h1>
+  <p>Completa los datos y verifica el resumen antes de enviarlo.</p>
+</header>
+
+@if (mensaje()) {
+  <p class="alert alert-success py-2">{{ mensaje() }}</p>
+}
+@if (error()) {
+  <p class="alert alert-danger py-2">{{ error() }}</p>
+}
+
+<div class="row g-4">
+  <form class="module-panel col-lg-7 row g-3" #formMatricula="ngForm" (ngSubmit)="enviar()">
+    <div class="col-md-6">
+      <label class="form-label" for="nombre">Nombre</label>
+      <input id="nombre" class="form-control" name="nombre" [(ngModel)]="solicitud.nombreEstudiante" required maxlength="120">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="codigo">Codigo de estudiante</label>
+      <input id="codigo" class="form-control" name="codigo" [(ngModel)]="solicitud.codigoEstudiante" required maxlength="30">
+    </div>
+    <div class="col-md-8">
+      <label class="form-label" for="curso">Curso</label>
+      <select id="curso" class="form-select" name="cursoId" [(ngModel)]="solicitud.cursoId" required>
+        <option [ngValue]="null">Seleccione un curso</option>
+        @for (curso of cursos(); track curso.id) {
+          <option [ngValue]="curso.id" [disabled]="curso.vacantes === 0">
+            {{ curso.codigo }} - {{ curso.nombre }} ({{ curso.vacantes }} vacantes)
+          </option>
+        }
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="turno">Turno</label>
+      <select id="turno" class="form-select" name="turno" [(ngModel)]="solicitud.turno" required>
+        @for (turno of turnos; track turno) {
+          <option [value]="turno">{{ etiquetaTurno(turno) }}</option>
+        }
+      </select>
+    </div>
+    <div class="col-12">
+      <button class="btn btn-success me-2" type="submit"
+        [disabled]="formMatricula.invalid || !cursoSeleccionado || cursoSeleccionado.vacantes === 0">
+        Enviar solicitud
+      </button>
+      <a class="btn btn-outline-secondary" routerLink="/cursos">Volver</a>
+    </div>
+  </form>
+
+  <aside class="summary col-lg-4">
+    <h2 class="h5">Resumen de matricula</h2>
+    @if (confirmacion(); as registrada) {
+      <p><strong>Solicitud #{{ registrada.id }}</strong></p>
+      <p>{{ registrada.nombreEstudiante }} - {{ registrada.codigoEstudiante }}</p>
+      <p>{{ registrada.curso.codigo }} - {{ registrada.curso.nombre }}</p>
+      <p>Turno: {{ etiquetaTurno(registrada.turno) }}</p>
+    } @else if (cursoSeleccionado; as curso) {
+      <p>{{ solicitud.nombreEstudiante || 'Nombre del estudiante' }}</p>
+      <p>{{ solicitud.codigoEstudiante || 'Codigo pendiente' }}</p>
+      <p>{{ curso.codigo }} - {{ curso.nombre }}</p>
+      <p>Turno: {{ etiquetaTurno(solicitud.turno) }}</p>
+    } @else {
+      <p class="text-muted">Selecciona un curso para visualizar el resumen.</p>
+    }
+  </aside>
+</div>

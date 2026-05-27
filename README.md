@@ -2,10 +2,10 @@
 
 Aplicacion fullstack de demostracion con cuatro modulos:
 
-- Productos: listar y registrar.
-- Incidencias: listar y actualizar.
-- Cursos: listar y matricular estudiantes.
-- Tareas: listar, registrar, actualizar y eliminar.
+- Cafeteria: consultar productos y registrar pedidos que descuentan stock.
+- Laboratorio: registrar incidencias y actualizar su estado de atencion.
+- Matricula: consultar cursos y solicitar matriculas que descuentan vacantes.
+- Tareas: administrar entregas con estado, fecha y prioridad.
 
 ## Estructura
 
@@ -47,15 +47,33 @@ La SPA queda disponible en `http://localhost:4200`.
 
 ## Base De Datos
 
-El esquema PostgreSQL se mantiene en:
+El esquema PostgreSQL recrea las tablas academicas y carga datos de demostracion:
 
 ```text
 backend/database/001_schema_inicial.sql
 ```
 
 Para preparar la base de demostracion, ejecutar manualmente ese script en
-pgAdmin. Los `INSERT` opcionales del final pueden ejecutarse una sola vez para
-mostrar datos iniciales durante la presentacion.
+pgAdmin. El script elimina las tablas anteriores, por lo que debe usarse en
+una base destinada a esta demostracion.
+
+## Endpoints Principales
+
+```text
+GET  /api/productos
+GET  /api/productos/{id}
+POST /api/pedidos
+GET  /api/incidencias
+POST /api/incidencias
+PUT  /api/incidencias/{id}/estado
+GET  /api/cursos
+GET  /api/cursos/{id}
+POST /api/matriculas
+GET  /api/tareas
+POST /api/tareas
+PUT  /api/tareas/{id}
+DELETE /api/tareas/{id}
+```
 
 ## Despliegue Backend En Render
 
@@ -111,7 +129,8 @@ Output Directory: dist/mi-app/browser
 ```
 
 El archivo `frontend/vercel.json` permite abrir y recargar directamente rutas
-SPA como `/productos`, `/incidencias`, `/cursos` y `/tareas`.
+SPA como `/productos`, `/pedidos`, `/incidencias/dashboard`, `/cursos`,
+`/matricula` y `/tareas`.
 
 ## Enlaces De Produccion
 
@@ -130,4 +149,3 @@ Backend (Render):  https://URL-BACKEND-RENDER
 3. Abrir el frontend Vercel y recorrer los cuatro modulos.
 4. Probar una operacion representativa en cada modulo.
 5. No versionar `backend/env/local.env` ni credenciales de Render.
-

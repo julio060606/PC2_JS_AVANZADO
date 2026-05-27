@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { ApiError } from '../../models/api-error';
 import { Tarea } from '../../models/tarea';
@@ -10,17 +10,15 @@ import { TareaService } from '../../services/tarea';
 @Component({
   selector: 'app-tareas',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './tareas.html',
   styleUrl: './tareas.css',
 })
 export class Tareas implements OnInit {
   readonly tareas = signal<Tarea[]>([]);
-  readonly edicionId = signal<number | undefined>(undefined);
   readonly mensaje = signal('');
   readonly error = signal('');
   readonly cargando = signal(false);
-  formulario: Tarea = { titulo: '', descripcion: '', completada: false };
 
   constructor(private readonly tareaService: TareaService) {}
 
@@ -42,71 +40,29 @@ export class Tareas implements OnInit {
     });
   }
 
-  guardar(): void {
-    this.limpiarMensajes();
-    const id = this.edicionId();
-    if (id === undefined) {
-      this.tareaService.registrarTarea(this.formulario).subscribe({
-        next: () => {
-          this.mensaje.set('Tarea registrada correctamente.');
-          this.reiniciarFormulario();
-          this.cargar();
-        },
-        error: (response: HttpErrorResponse) => this.error.set(this.mensajeError(response)),
-      });
-      return;
-    }
-
-    this.tareaService.actualizarTarea(id, this.formulario).subscribe({
-      next: () => {
-        this.mensaje.set('Tarea actualizada correctamente.');
-        this.reiniciarFormulario();
-        this.cargar();
-      },
-      error: (response: HttpErrorResponse) => this.error.set(this.mensajeError(response)),
-    });
-  }
-
-  editar(tarea: Tarea): void {
-    this.edicionId.set(tarea.id);
-    this.formulario = {
-      titulo: tarea.titulo,
-      descripcion: tarea.descripcion,
-      completada: tarea.completada,
-    };
-    this.limpiarMensajes();
-  }
-
   eliminar(tarea: Tarea): void {
     if (tarea.id === undefined) {
       return;
     }
-    this.limpiarMensajes();
     this.tareaService.eliminarTarea(tarea.id).subscribe({
       next: () => {
         this.mensaje.set('Tarea eliminada correctamente.');
-        if (this.edicionId() === tarea.id) {
-          this.reiniciarFormulario();
-        }
         this.cargar();
       },
       error: (response: HttpErrorResponse) => this.error.set(this.mensajeError(response)),
     });
   }
 
-  cancelarEdicion(): void {
-    this.reiniciarFormulario();
-    this.limpiarMensajes();
+  vencida(tarea: Tarea): boolean {
+    return tarea.estado !== 'COMPLETADA' && new Date(`${tarea.fechaEntrega}T23:59:59`) < new Date();
   }
 
-  private reiniciarFormulario(): void {
-    this.edicionId.set(undefined);
-    this.formulario = { titulo: '', descripcion: '', completada: false };
+  urgente(tarea: Tarea): boolean {
+    return tarea.estado !== 'COMPLETADA' && tarea.prioridad === 'ALTA';
   }
 
-  private limpiarMensajes(): void {
-    this.mensaje.set('');
-    this.error.set('');
+  etiqueta(valor: string): string {
+    return valor === 'EN_PROCESO' ? 'En proceso' : valor.charAt(0) + valor.slice(1).toLowerCase();
   }
 
   private mensajeError(response: HttpErrorResponse): string {

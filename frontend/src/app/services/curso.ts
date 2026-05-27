@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { Curso, Matriculado, MatriculadoRequest } from '../models/curso';
+import { Curso, Matricula, MatriculaRequest } from '../models/curso';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,11 @@ export class CursoService {
     return this.http.get<Curso[]>(this.url);
   }
 
-  matricular(cursoId: number, request: MatriculadoRequest): Observable<Matriculado> {
-    return this.http.post<Matriculado>(`${this.url}/${cursoId}/matriculados`, request);
+  getCurso(id: number): Observable<Curso> {
+    return this.http.get<Curso>(`${this.url}/${id}`);
+  }
+
+  matricular(request: MatriculaRequest): Observable<Matricula> {
+    return this.http.post<Matricula>(`${environment.apiUrl}/matriculas`, request);
   }
 }

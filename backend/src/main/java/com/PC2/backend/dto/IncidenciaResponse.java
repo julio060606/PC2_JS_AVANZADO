@@ -1,6 +1,10 @@
 package com.PC2.backend.dto;
 
-import com.PC2.backend.entity.EstadoIncidencia;
+import java.time.Instant;
 
-public record IncidenciaResponse(Long id, String titulo, String descripcion, EstadoIncidencia estado) {
+import com.PC2.backend.entity.EstadoIncidencia;
+import com.PC2.backend.entity.RolReportante;
+
+public record IncidenciaResponse(Long id, String nombreReportante, RolReportante rolReportante, String aula,
+		String equipo, String tipo, String descripcion, EstadoIncidencia estado, Instant fechaRegistro) {
 }

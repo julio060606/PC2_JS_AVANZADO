@@ -1,51 +1,52 @@
 <header class="module-header">
-  <h1>Incidencias</h1>
-  <p>Consulta solicitudes y actualiza su estado de atencion.</p>
+  <h1>Lista de incidencias</h1>
+  <p>Revisa los reportes del laboratorio y actualiza la atencion.</p>
 </header>
 
-<p class="alert alert-success py-2" *ngIf="mensaje()">{{ mensaje() }}</p>
-<p class="alert alert-danger py-2" *ngIf="error()">{{ error() }}</p>
+<nav class="module-links mb-4">
+  <a routerLink="/incidencias/dashboard">Dashboard</a>
+  <a routerLink="/incidencias/nueva">Nueva incidencia</a>
+</nav>
 
-<form *ngIf="seleccionadaId() !== undefined" class="module-panel editor-panel mb-4" #formIncidencia="ngForm" (ngSubmit)="actualizar()">
-  <h2 class="section-title">Editar incidencia #{{ seleccionadaId() }}</h2>
-  <div class="mb-2">
-    <label class="form-label" for="incidenciaTitulo">Titulo</label>
-    <input id="incidenciaTitulo" class="form-control" name="titulo" [(ngModel)]="formulario.titulo" required maxlength="150">
-  </div>
-  <div class="mb-2">
-    <label class="form-label" for="incidenciaDescripcion">Descripcion</label>
-    <textarea id="incidenciaDescripcion" class="form-control" name="descripcion" [(ngModel)]="formulario.descripcion" required maxlength="500"></textarea>
-  </div>
-  <div class="mb-3">
-    <label class="form-label" for="incidenciaEstado">Estado</label>
-    <select id="incidenciaEstado" class="form-select" name="estado" [(ngModel)]="formulario.estado" required>
-      <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
-    </select>
-  </div>
-  <button class="btn btn-primary me-2" type="submit" [disabled]="formIncidencia.invalid">Guardar</button>
-  <button class="btn btn-secondary" type="button" (click)="cancelar()">Cancelar</button>
-</form>
+@if (mensaje()) {
+  <p class="alert alert-success py-2">{{ mensaje() }}</p>
+}
+@if (error()) {
+  <p class="alert alert-danger py-2">{{ error() }}</p>
+}
 
 <section class="module-panel table-responsive">
-  <h2 class="section-title">Listado de incidencias</h2>
   <table class="table table-hover align-middle mb-0">
     <thead>
-      <tr><th>ID</th><th>Titulo</th><th>Descripcion</th><th>Estado</th><th></th></tr>
+      <tr>
+        <th>Aula</th><th>Equipo</th><th>Tipo</th><th>Descripcion</th><th>Reportante</th><th>Estado</th><th></th>
+      </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let incidencia of incidencias()">
-        <td>{{ incidencia.id }}</td>
-        <td>{{ incidencia.titulo }}</td>
-        <td>{{ incidencia.descripcion }}</td>
-        <td><span class="status-pill" [ngClass]="incidencia.estado.toLowerCase()">{{ incidencia.estado }}</span></td>
-        <td><button class="btn btn-sm btn-outline-primary" type="button" (click)="editar(incidencia)">Editar</button></td>
-      </tr>
-      <tr *ngIf="cargando()">
-        <td colspan="5" class="empty-state">Cargando incidencias...</td>
-      </tr>
-      <tr *ngIf="!cargando() && incidencias().length === 0">
-        <td colspan="5" class="empty-state">No hay incidencias registradas.</td>
-      </tr>
+      @for (incidencia of incidencias(); track incidencia.id) {
+        <tr>
+          <td>{{ incidencia.aula }}</td>
+          <td>{{ incidencia.equipo }}</td>
+          <td>{{ incidencia.tipo }}</td>
+          <td>{{ incidencia.descripcion }}</td>
+          <td>{{ incidencia.nombreReportante }} <small>({{ incidencia.rolReportante | titlecase }})</small></td>
+          <td><span class="status-pill" [ngClass]="incidencia.estado.toLowerCase()">{{ etiquetaEstado(incidencia.estado) }}</span></td>
+          <td>
+            @if (incidencia.estado !== 'ATENDIDA') {
+              <button class="btn btn-sm btn-outline-primary" type="button" (click)="avanzarEstado(incidencia)">
+                Avanzar
+              </button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        @if (!cargando()) {
+          <tr><td colspan="7" class="empty-state">No hay incidencias registradas.</td></tr>
+        }
+      }
+      @if (cargando()) {
+        <tr><td colspan="7" class="empty-state">Cargando incidencias...</td></tr>
+      }
     </tbody>
   </table>
 </section>

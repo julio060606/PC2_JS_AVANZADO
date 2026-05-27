@@ -1,27 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { ApiError } from '../../models/api-error';
-import { EstadoIncidencia, Incidencia, IncidenciaRequest } from '../../models/incidencia';
+import { EstadoIncidencia, Incidencia } from '../../models/incidencia';
 import { IncidenciaService } from '../../services/incidencia';
 
 @Component({
   selector: 'app-incidencias',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './incidencias.html',
   styleUrl: './incidencias.css',
 })
 export class Incidencias implements OnInit {
   readonly incidencias = signal<Incidencia[]>([]);
-  readonly estados: EstadoIncidencia[] = ['PENDIENTE', 'EN_PROCESO', 'RESUELTA'];
-  readonly seleccionadaId = signal<number | undefined>(undefined);
   readonly mensaje = signal('');
   readonly error = signal('');
   readonly cargando = signal(false);
-  formulario: IncidenciaRequest = { titulo: '', descripcion: '', estado: 'PENDIENTE' };
 
   constructor(private readonly incidenciaService: IncidenciaService) {}
 
@@ -43,40 +40,31 @@ export class Incidencias implements OnInit {
     });
   }
 
-  editar(incidencia: Incidencia): void {
-    this.seleccionadaId.set(incidencia.id);
-    this.formulario = {
-      titulo: incidencia.titulo,
-      descripcion: incidencia.descripcion,
-      estado: incidencia.estado,
-    };
-    this.limpiarMensajes();
-  }
-
-  actualizar(): void {
-    const id = this.seleccionadaId();
-    if (id === undefined) {
+  avanzarEstado(incidencia: Incidencia): void {
+    const estado = this.siguienteEstado(incidencia.estado);
+    if (!estado) {
       return;
     }
-    this.limpiarMensajes();
-    this.incidenciaService.actualizarIncidencia(id, this.formulario).subscribe({
+    this.mensaje.set('');
+    this.error.set('');
+    this.incidenciaService.cambiarEstado(incidencia.id, estado).subscribe({
       next: () => {
-        this.mensaje.set('Incidencia actualizada correctamente.');
-        this.cancelar();
+        this.mensaje.set('Estado actualizado correctamente.');
         this.cargar();
       },
       error: (response: HttpErrorResponse) => this.error.set(this.mensajeError(response)),
     });
   }
 
-  cancelar(): void {
-    this.seleccionadaId.set(undefined);
-    this.formulario = { titulo: '', descripcion: '', estado: 'PENDIENTE' };
+  etiquetaEstado(estado: EstadoIncidencia): string {
+    return estado === 'EN_PROCESO' ? 'En proceso' : estado.charAt(0) + estado.slice(1).toLowerCase();
   }
 
-  private limpiarMensajes(): void {
-    this.mensaje.set('');
-    this.error.set('');
+  private siguienteEstado(estado: EstadoIncidencia): EstadoIncidencia | undefined {
+    if (estado === 'PENDIENTE') {
+      return 'EN_PROCESO';
+    }
+    return estado === 'EN_PROCESO' ? 'ATENDIDA' : undefined;
   }
 
   private mensajeError(response: HttpErrorResponse): string {

@@ -4,61 +4,46 @@
   padding-left: 1rem;
 }
 
-.module-header h1 {
-  margin-bottom: 0.25rem;
-}
-
 .module-header p {
   color: var(--muted-text);
   margin: 0;
 }
 
-.module-panel {
-  background: #fff;
-  border: 1px solid var(--card-border);
-  border-radius: 0.7rem;
-  padding: 1.15rem;
-}
-
-.enrollment-panel {
-  border-top: 4px solid #27885d;
-}
-
-.section-title {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-}
-
 .course-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 .course-card {
   border: 1px solid var(--card-border);
-  box-shadow: none;
 }
 
-.course-card h2 {
-  color: #194f39;
+.course-card.no-vacancies {
+  background: #fbfcfd;
+  opacity: 0.8;
+}
+
+.code {
+  color: #27885d;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.45rem;
+}
+
+.details {
+  color: var(--muted-text);
 }
 
 .availability {
-  background: #eef8f3;
-  border-radius: 0.35rem;
-  color: #246343;
-  display: inline-block;
-  padding: 0.3rem 0.55rem;
+  background: #e2f5e9;
+  border-radius: 1rem;
+  color: #176540;
+  font-weight: 600;
+  padding: 0.25rem 0.7rem;
 }
 
-.students {
-  color: var(--muted-text);
-  margin-top: 0.45rem;
-  padding-left: 1.15rem;
-}
-
-.loading-state,
 .empty-state {
   background: #fff;
   border: 1px solid var(--card-border);
@@ -66,4 +51,8 @@
   color: var(--muted-text);
   padding: 1.15rem;
   text-align: center;
+}
+
+.grid-message {
+  grid-column: 1 / -1;
 }

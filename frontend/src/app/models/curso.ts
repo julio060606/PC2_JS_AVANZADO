@@ -1,19 +1,27 @@
-export interface Matriculado {
-  id: number;
-  nombre: string;
-  email: string;
-}
+export type Modalidad = 'PRESENCIAL' | 'VIRTUAL' | 'HIBRIDA';
+export type Turno = 'MANANA' | 'TARDE' | 'NOCHE';
 
 export interface Curso {
   id: number;
+  codigo: string;
   nombre: string;
-  descripcion: string;
-  cupos: number;
-  cuposDisponibles: number;
-  matriculados: Matriculado[];
+  creditos: number;
+  modalidad: Modalidad;
+  vacantes: number;
 }
 
-export interface MatriculadoRequest {
-  nombre: string;
-  email: string;
+export interface MatriculaRequest {
+  nombreEstudiante: string;
+  codigoEstudiante: string;
+  cursoId: number | null;
+  turno: Turno;
+}
+
+export interface Matricula {
+  id: number;
+  nombreEstudiante: string;
+  codigoEstudiante: string;
+  curso: Curso;
+  turno: Turno;
+  fechaRegistro: string;
 }
