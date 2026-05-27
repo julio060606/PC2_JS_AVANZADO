@@ -1,60 +1,133 @@
-# Proyecto PC2 - Js Avanzado (Frontend & Backend)
+# Proyecto PC2 - Frontend Angular Y Backend Spring Boot
 
-Bienvenido al repositorio central para nuestra evaluación PC2. Este repositorio es un **monorepo** que contiene tanto el backend (Spring Boot) como el frontend (Angular). 
+Aplicacion fullstack de demostracion con cuatro modulos:
 
-Todo está configurado para trabajar de forma fluida a través de **GitHub Codespaces**.
+- Productos: listar y registrar.
+- Incidencias: listar y actualizar.
+- Cursos: listar y matricular estudiantes.
+- Tareas: listar, registrar, actualizar y eliminar.
 
----
-
-## 📂 Estructura del Proyecto
+## Estructura
 
 ```text
-mi-proyecto-pc2/
-├── backend/          <-- API RESTful en Java (Spring Boot)
-│   ├── src/
-│   ├── pom.xml
-│   └── ...
-├── frontend/         <-- Aplicación SPA en TypeScript (Angular)
-│   ├── src/
-│   ├── package.json
-│   └── ...
-└── README.md
+PC2_JS_AVANZADO/
+|-- backend/     API REST Spring Boot + PostgreSQL
+|-- frontend/    SPA Angular
+`-- README.md
+```
 
-Paso 1: Levantar el Backend (Spring Boot)
-Abre una nueva terminal en Codespaces (Ctrl + Shift + ``` o desde el menú).
+## Desarrollo Local
 
-Ingresa a la carpeta del backend y ejecuta la aplicación:
-cd backend
-./mvnw spring-boot:run
+### Backend
 
-Paso 2: Levantar el Frontend (Angular)
-Divide la terminal de Codespaces (haz clic en el ícono de las dos ventanas juntas en el panel de terminal) o abre una segunda terminal.
+El backend usa variables de entorno para PostgreSQL. Para IntelliJ o ejecucion
+local, crear `backend/env/local.env` tomando como referencia
+`backend/env/local.env.example`. Este archivo esta excluido de Git.
 
-Ingresa a la carpeta del frontend, instala las dependencias y levanta el servidor:
-cd frontend
+Desde `backend/`:
+
+```powershell
+.\scripts\mvn-local.cmd spring-boot:run
+```
+
+La API queda disponible en `http://localhost:8080/api`.
+
+### Frontend
+
+El frontend usa exclusivamente `pnpm` y conserva `pnpm-lock.yaml`.
+
+Desde `frontend/`:
+
+```powershell
 pnpm install
 pnpm start
-(Nota: El comando pnpm install es obligatorio la primera vez que entras al Codespace para que se genere la carpeta node_modules).
+```
 
-Paso 3: Puertos y CORS
-El Backend corre en el puerto 8080.
+La SPA queda disponible en `http://localhost:4200`.
 
-El Frontend corre en el puerto 4200.
+## Base De Datos
 
-⚠️ MUY IMPORTANTE: Ve a la pestaña "Ports" (Puertos) en la parte inferior de Codespaces. Asegúrate de que la "Visibility" (Visibilidad) del puerto 8080 esté en Public. Si está en Private, el frontend de Angular no podrá conectarse a la API.
+El esquema PostgreSQL se mantiene en:
 
-🌐 Enlaces de Despliegue (Producción)
-Cuando hagamos un push a la rama main, las plataformas desplegarán los cambios automáticamente:
+```text
+backend/database/001_schema_inicial.sql
+```
 
-Frontend (Vercel): [URL_PENDIENTE_AQUI]
+Para preparar la base de demostracion, ejecutar manualmente ese script en
+pgAdmin. Los `INSERT` opcionales del final pueden ejecutarse una sola vez para
+mostrar datos iniciales durante la presentacion.
 
-Backend (Render): [URL_PENDIENTE_AQUI]
+## Despliegue Backend En Render
 
-📝 Reglas de Trabajo para el Examen
-Rutas Relativas/Variables de Entorno: En Angular, usamos variables de entorno para consumir la API. Si modificas los servicios, asegúrate de usar environment.apiUrl en lugar de quemar http://localhost:8080.
+Crear el Web Service desde este repositorio con estos valores:
 
-Commits Claros: Tratemos de hacer commits separados si el cambio es netamente del front o del back. Si es una función completa (ej: Endpoint de Tareas + Vista), se puede hacer en uno solo.
+```text
+Root Directory: backend
+Runtime: Docker
+Dockerfile: Dockerfile
+Health Check Path: /api/productos
+```
 
+Configurar las variables del servicio:
 
+```text
+DB_URL=jdbc:postgresql://HOST_INTERNO_RENDER:5432/BASE_RENDER
+DB_USERNAME=USUARIO_RENDER
+DB_PASSWORD=PASSWORD_RENDER
+DDL_AUTO=validate
+CORS_ALLOWED_ORIGINS=http://localhost:4200
+```
 
+`DDL_AUTO=validate` hace que Hibernate valide las tablas creadas por el script
+sin intentar construir el esquema durante el despliegue.
+
+Una vez que Vercel entregue la URL del frontend, actualizar Render:
+
+```text
+CORS_ALLOWED_ORIGINS=http://localhost:4200,https://URL-FRONTEND-VERCEL
+```
+
+## Despliegue Frontend En Vercel
+
+Antes de crear el deploy, reemplazar en
+`frontend/src/environments/environment.production.ts` la URL local por la URL
+publica real de Render:
+
+```ts
+export const environment = {
+  production: true,
+  apiUrl: 'https://URL-BACKEND-RENDER/api',
+};
+```
+
+Configurar el proyecto Vercel:
+
+```text
+Root Directory: frontend
+Framework Preset: Angular
+Install Command: pnpm install --frozen-lockfile
+Build Command: pnpm build
+Output Directory: dist/mi-app/browser
+```
+
+El archivo `frontend/vercel.json` permite abrir y recargar directamente rutas
+SPA como `/productos`, `/incidencias`, `/cursos` y `/tareas`.
+
+## Enlaces De Produccion
+
+Completar al finalizar los despliegues:
+
+```text
+Frontend (Vercel): https://URL-FRONTEND-VERCEL
+Backend (Render):  https://URL-BACKEND-RENDER
+```
+
+## Checklist Para Presentacion
+
+1. Confirmar que la base Render contiene tablas y datos de prueba.
+2. Abrir `https://URL-BACKEND-RENDER/api/productos` minutos antes para
+   despertar el servicio gratuito.
+3. Abrir el frontend Vercel y recorrer los cuatro modulos.
+4. Probar una operacion representativa en cada modulo.
+5. No versionar `backend/env/local.env` ni credenciales de Render.
 

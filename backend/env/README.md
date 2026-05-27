@@ -23,4 +23,6 @@ Si necesitas reconstruir tu archivo local, copia los nombres definidos en
 `local.env.example` y proporciona tus propios valores.
 
 En Render no se crea este archivo: define `DB_URL`, `DB_USERNAME`,
-`DB_PASSWORD` y `CORS_ALLOWED_ORIGINS` como variables del servicio.
+`DB_PASSWORD`, `DDL_AUTO=validate` y `CORS_ALLOWED_ORIGINS` como variables
+del servicio. Ejecuta previamente `database/001_schema_inicial.sql` en la
+base de produccion para que la validacion de Hibernate sea exitosa.
